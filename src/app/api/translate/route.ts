@@ -20,9 +20,10 @@ function httpsPost(
     };
 
     const req = https.request(options, (res) => {
-      let data = "";
-      res.on("data", (chunk: string) => (data += chunk));
+      const chunks: Buffer[] = [];
+      res.on("data", (chunk: Buffer) => chunks.push(chunk));
       res.on("end", () => {
+        const data = Buffer.concat(chunks).toString("utf8");
         if (!res.statusCode || res.statusCode >= 400) {
           reject(
             new Error(
