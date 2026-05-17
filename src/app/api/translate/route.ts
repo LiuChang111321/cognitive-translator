@@ -230,9 +230,9 @@ export async function POST(request: NextRequest) {
     let rawText: string;
     try {
       if (provider === "openai") {
-        if (!process.env.OPENAI_API_KEY) {
+        if (!process.env.DEEPSEEK_API_KEY && !process.env.OPENAI_API_KEY) {
           return NextResponse.json(
-            { error: "未配置 OpenAI API Key，请检查环境变量。" },
+            { error: "未配置 API Key（DEEPSEEK_API_KEY / OPENAI_API_KEY），请检查环境变量。" },
             { status: 500 }
           );
         }
