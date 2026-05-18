@@ -6,6 +6,8 @@ import { CognitiveExamples } from "@/components/cognitive-examples";
 import { CognitiveTranslator } from "@/components/cognitive-translator";
 import { CognitiveAbout } from "@/components/cognitive-about";
 import { Disclaimer } from "@/components/disclaimer";
+import { ViralScenes } from "@/components/viral-scenes";
+import { PersonalityObservations } from "@/components/personality-observations";
 import { useTranslate } from "@/hooks/use-translate";
 import type { TranslateInput } from "@/lib/types";
 
@@ -38,7 +40,7 @@ export default function Home() {
     <main className="flex-1 flex flex-col items-center px-4 sm:px-6 max-w-xl mx-auto w-full">
       <CognitiveHero />
 
-      <div className="w-full space-y-12 mt-2 mb-16">
+      <div className="w-full space-y-10 mt-1 mb-16">
         <CognitiveTranslator
           onSubmit={handleSubmit}
           values={formValues}
@@ -50,6 +52,8 @@ export default function Home() {
         />
 
         <CognitiveExamples onSelect={handleExampleSelect} />
+        <ViralScenes />
+        <PersonalityObservations />
         <CognitiveAbout />
         <Disclaimer />
       </div>
