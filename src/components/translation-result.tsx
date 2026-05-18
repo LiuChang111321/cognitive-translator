@@ -10,8 +10,9 @@ import {
   RefreshCw,
   Reply,
   Heart,
+  Zap,
+  Compass,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { TranslateResult } from "@/lib/types";
@@ -82,6 +83,12 @@ const SECTION_CONFIG = [
     accent: "border-l-emerald-400",
   },
   {
+    key: "cognitiveGap" as const,
+    label: "认知差异分析",
+    icon: Zap,
+    accent: "border-l-orange-400",
+  },
+  {
     key: "communicationRisk" as const,
     label: "沟通风险",
     icon: AlertTriangle,
@@ -98,6 +105,12 @@ const SECTION_CONFIG = [
     label: "最小共同语义集",
     icon: Heart,
     accent: "border-l-rose-400",
+  },
+  {
+    key: "practicalNextStep" as const,
+    label: "实际行动建议",
+    icon: Compass,
+    accent: "border-l-teal-400",
   },
 ];
 
@@ -139,7 +152,7 @@ function LoadingSkeleton() {
         <CardTitle className="text-lg">分析结果</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        {Array.from({ length: 7 }).map((_, i) => (
+        {Array.from({ length: 9 }).map((_, i) => (
           <div key={i} className="pl-4 border-l-2 border-muted space-y-2">
             <div className="flex items-center gap-2">
               <Skeleton className="h-7 w-7 rounded-md" />

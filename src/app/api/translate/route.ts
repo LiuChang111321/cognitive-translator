@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { buildTranslatePrompt } from "@/lib/prompt";
+import { buildTranslatePrompt } from "@/lib/ai/buildTranslationPrompt";
+import { isMbtiCode } from "@/lib/mbti/types";
 import type { TranslateInput, TranslateResult } from "@/lib/types";
 import https from "https";
 
@@ -55,10 +56,12 @@ function getFallbackResult(input: TranslateInput): TranslateResult {
     receiverPossibleMisread:
       "无法分析可能的误解。请稍后重试。",
     translatedExpression: input.originalText,
+    cognitiveGap: "无法分析认知差异。请稍后重试。",
     communicationRisk:
       "AI 服务暂时不可用，无法提供风险分析。",
     suggestedReply: "请稍后重试以获得回复建议。",
     minimalSharedSemantics: `双方表达的核心内容为："${input.originalText.slice(0, 60)}..."`,
+    practicalNextStep: "请稍后重试以获得沟通改善建议。",
     confidenceNote:
       "此为 AI 服务不可用时的备用回复。开启有效的 AI_API_KEY 后可获得完整分析。",
   };
@@ -89,21 +92,15 @@ async function callAnthropic(
 }
 
 async function callOpenAI(system: string, user: string): Promise<string> {
-  // 兼容多种常见环境变量名：DEEPSEEK_API_KEY > OPENAI_API_KEY
   const apiKey = (process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY || "").trim();
-
-  // 兼容多种常见 base URL 变量名：AI_BASE_URL > OPENAI_BASE_URL > OPENAI_API_BASE
   const baseUrl =
     process.env.AI_BASE_URL ||
     process.env.OPENAI_BASE_URL ||
     process.env.OPENAI_API_BASE ||
     "https://api.openai.com/v1";
-
-  // 兼容多种常见 model 变量名：AI_MODEL > OPENAI_MODEL
   const model =
     process.env.AI_MODEL || process.env.OPENAI_MODEL || "gpt-4o";
 
-  // deepseek-reasoner 不支持 system 角色，需要合并到 user 消息中
   const isReasoner = model.includes("reasoner");
   const messages = isReasoner
     ? [{ role: "user", content: `${system}\n\n${user}` }]
@@ -167,9 +164,11 @@ function parseJSONResponse(
     "senderDeepIntent",
     "receiverPossibleMisread",
     "translatedExpression",
+    "cognitiveGap",
     "communicationRisk",
     "suggestedReply",
     "minimalSharedSemantics",
+    "practicalNextStep",
   ];
 
   for (const field of requiredFields) {
@@ -183,10 +182,11 @@ function parseJSONResponse(
     senderDeepIntent: parsed.senderDeepIntent || "（分析未生成）",
     receiverPossibleMisread: parsed.receiverPossibleMisread || "（分析未生成）",
     translatedExpression: parsed.translatedExpression || input.originalText,
+    cognitiveGap: parsed.cognitiveGap || "（分析未生成）",
     communicationRisk: parsed.communicationRisk || "（分析未生成）",
     suggestedReply: parsed.suggestedReply || "（分析未生成）",
-    minimalSharedSemantics:
-      parsed.minimalSharedSemantics || "（分析未生成）",
+    minimalSharedSemantics: parsed.minimalSharedSemantics || "（分析未生成）",
+    practicalNextStep: parsed.practicalNextStep || "（分析未生成）",
     confidenceNote:
       parsed.confidenceNote || "AI 分析仅供参考，实际沟通应结合具体情境。",
   };
@@ -211,14 +211,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!["INTJ", "ENFP"].includes(input.senderType)) {
+    if (!isMbtiCode(input.senderType)) {
       return NextResponse.json(
         { error: "发送者认知风格无效。" },
         { status: 400 }
       );
     }
 
-    if (!["INTJ", "ENFP"].includes(input.receiverType)) {
+    if (!isMbtiCode(input.receiverType)) {
       return NextResponse.json(
         { error: "接收者认知风格无效。" },
         { status: 400 }
@@ -249,7 +249,6 @@ export async function POST(request: NextRequest) {
       }
     } catch (err) {
       console.error("AI API call failed:", err);
-      // Return fallback instead of crashing
       const fallback = getFallbackResult(input);
       return NextResponse.json(fallback);
     }

@@ -14,12 +14,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import type { CognitiveStyle, Scenario, TranslateInput } from "@/lib/types";
-
-const COGNITIVE_OPTIONS: { value: CognitiveStyle; label: string }[] = [
-  { value: "INTJ", label: "INTJ" },
-  { value: "ENFP", label: "ENFP" },
-];
+import { MBTI_OPTIONS, MBTI_DISPLAY } from "@/lib/constants";
+import type { Scenario, TranslateInput } from "@/lib/types";
+import type { CognitiveStyle } from "@/lib/types";
 
 const SCENARIO_OPTIONS: { value: Scenario; label: string }[] = [
   { value: "恋爱关系", label: "恋爱关系" },
@@ -57,6 +54,9 @@ export function TranslateForm({
     onSubmit(initialValues);
   };
 
+  const senderInfo = MBTI_DISPLAY[initialValues.senderType];
+  const receiverInfo = MBTI_DISPLAY[initialValues.receiverType];
+
   return (
     <Card className="w-full border shadow-sm">
       <CardHeader>
@@ -72,7 +72,7 @@ export function TranslateForm({
               翻译方向
             </Label>
             <div className="flex items-center gap-3">
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <Select
                   value={initialValues.senderType}
                   onValueChange={(v) =>
@@ -82,21 +82,24 @@ export function TranslateForm({
                   <SelectTrigger id="senderType" className="font-medium">
                     <SelectValue placeholder="发送者" />
                   </SelectTrigger>
-                  <SelectContent>
-                    {COGNITIVE_OPTIONS.map((opt) => (
+                  <SelectContent className="max-h-[300px]">
+                    {MBTI_OPTIONS.map((opt) => (
                       <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
+                        <span className="text-xs font-medium">{opt.label}</span>
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+                <p className="text-[10px] text-muted-foreground mt-1 leading-tight">
+                  倾向：{senderInfo.traits}
+                </p>
               </div>
 
-              <div className="shrink-0 text-muted-foreground">
+              <div className="shrink-0 text-muted-foreground mt-6">
                 <ArrowRight className="h-5 w-5" />
               </div>
 
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <Select
                   value={initialValues.receiverType}
                   onValueChange={(v) =>
@@ -106,14 +109,17 @@ export function TranslateForm({
                   <SelectTrigger id="receiverType" className="font-medium">
                     <SelectValue placeholder="接收者" />
                   </SelectTrigger>
-                  <SelectContent>
-                    {COGNITIVE_OPTIONS.map((opt) => (
+                  <SelectContent className="max-h-[300px]">
+                    {MBTI_OPTIONS.map((opt) => (
                       <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
+                        <span className="text-xs font-medium">{opt.label}</span>
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+                <p className="text-[10px] text-muted-foreground mt-1 leading-tight">
+                  倾向：{receiverInfo.traits}
+                </p>
               </div>
             </div>
           </div>

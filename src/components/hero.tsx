@@ -12,7 +12,7 @@ export function Hero() {
         {/* Version badge */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border bg-white/80 text-xs font-medium text-muted-foreground shadow-sm">
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary" />
-          第一版 · INTJ ↔ ENFP
+          第二版 · 16 种 MBTI 任意互译
         </div>
 
         {/* Title */}
@@ -22,7 +22,7 @@ export function Hero() {
 
         {/* Subtitle */}
         <p className="text-lg sm:text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
-          把 INTJ 和 ENFP 之间的
+          把不同认知风格之间的
           <span className="text-foreground font-medium">&ldquo;信息编码差异&rdquo;</span>
           翻译成双方都能理解的语言。
         </p>

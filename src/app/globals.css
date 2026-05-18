@@ -93,6 +93,8 @@ body::before {
 .animate-fade-in-up:nth-child(5) { animation-delay: 0.25s; }
 .animate-fade-in-up:nth-child(6) { animation-delay: 0.3s; }
 .animate-fade-in-up:nth-child(7) { animation-delay: 0.35s; }
+.animate-fade-in-up:nth-child(8) { animation-delay: 0.4s; }
+.animate-fade-in-up:nth-child(9) { animation-delay: 0.45s; }
 
 /* Glow pulse for hero */
 @keyframes glow-pulse {

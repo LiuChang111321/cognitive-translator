@@ -1,4 +1,6 @@
-export type CognitiveStyle = "INTJ" | "ENFP";
+import type { MbtiCode } from "./mbti/types";
+
+export type CognitiveStyle = MbtiCode;
 
 export type Scenario = "恋爱关系" | "朋友沟通" | "团队协作" | "工作反馈" | "自定义";
 
@@ -15,9 +17,11 @@ export interface TranslateResult {
   senderDeepIntent: string;
   receiverPossibleMisread: string;
   translatedExpression: string;
+  cognitiveGap: string;
   communicationRisk: string;
   suggestedReply: string;
   minimalSharedSemantics: string;
+  practicalNextStep: string;
   confidenceNote: string;
 }
 
