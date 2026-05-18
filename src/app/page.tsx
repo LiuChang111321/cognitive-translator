@@ -1,11 +1,10 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { Hero } from "@/components/hero";
-import { Description } from "@/components/description";
-import { TranslateForm } from "@/components/translate-form";
-import { TranslationResult } from "@/components/translation-result";
-import { ExamplePresets } from "@/components/example-presets";
+import { CognitiveHero } from "@/components/cognitive-hero";
+import { CognitiveExamples } from "@/components/cognitive-examples";
+import { CognitiveTranslator } from "@/components/cognitive-translator";
+import { CognitiveAbout } from "@/components/cognitive-about";
 import { Disclaimer } from "@/components/disclaimer";
 import { useTranslate } from "@/hooks/use-translate";
 import type { TranslateInput } from "@/lib/types";
@@ -37,19 +36,31 @@ export default function Home() {
 
   return (
     <main className="flex-1 flex flex-col items-center px-4 sm:px-6 max-w-2xl mx-auto w-full">
-      <Hero />
-      <Description />
-      <div className="w-full space-y-6 mt-6">
-        <ExamplePresets onSelect={handleExampleSelect} />
-        <TranslateForm
-          onSubmit={handleSubmit}
-          initialValues={formValues}
-          onValuesChange={setFormValues}
-          loading={loading}
-        />
-        <TranslationResult result={result} loading={loading} error={error} />
+      <CognitiveHero />
+
+      <div className="w-full space-y-16 mt-4 mb-16">
+        <CognitiveExamples onSelect={handleExampleSelect} />
+
+        <div className="space-y-4">
+          <div className="text-center">
+            <span className="text-[10px] text-white/20 uppercase tracking-[0.2em] font-medium">
+              Cognitive Translator
+            </span>
+          </div>
+          <CognitiveTranslator
+            onSubmit={handleSubmit}
+            values={formValues}
+            onValuesChange={setFormValues}
+            loading={loading}
+            result={result}
+            error={error}
+            status={status}
+          />
+        </div>
+
+        <CognitiveAbout />
+        <Disclaimer />
       </div>
-      <Disclaimer />
     </main>
   );
 }

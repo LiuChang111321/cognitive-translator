@@ -20,31 +20,31 @@
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
-  --radius: 0.625rem;
+  --radius: 0.75rem;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 :root {
-  --background: 220 20% 97%;
-  --foreground: 240 10% 8%;
-  --card: 0 0% 100%;
-  --card-foreground: 240 10% 8%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 240 10% 8%;
-  --primary: 252 56% 57%;
+  --background: 240 10% 4%;
+  --foreground: 0 0% 93%;
+  --card: 240 8% 6%;
+  --card-foreground: 0 0% 93%;
+  --popover: 240 8% 8%;
+  --popover-foreground: 0 0% 93%;
+  --primary: 252 65% 55%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 220 14% 93%;
-  --secondary-foreground: 240 10% 12%;
-  --muted: 220 14% 93%;
+  --secondary: 240 5% 12%;
+  --secondary-foreground: 0 0% 90%;
+  --muted: 240 5% 10%;
   --muted-foreground: 240 5% 45%;
-  --accent: 252 56% 95%;
-  --accent-foreground: 252 56% 35%;
-  --destructive: 0 84% 60%;
+  --accent: 252 50% 15%;
+  --accent-foreground: 252 60% 75%;
+  --destructive: 0 70% 50%;
   --destructive-foreground: 0 0% 100%;
-  --border: 220 13% 88%;
-  --input: 220 13% 88%;
-  --ring: 252 56% 57%;
+  --border: 240 5% 14%;
+  --input: 240 5% 14%;
+  --ring: 252 65% 55%;
 }
 
 * {
@@ -57,55 +57,91 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
-/* Subtle background pattern */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-  background:
-    radial-gradient(ellipse 80% 60% at 50% -20%, hsl(252 56% 57% / 0.06), transparent),
-    radial-gradient(ellipse 60% 50% at 80% 80%, hsl(190 80% 50% / 0.04), transparent),
-    radial-gradient(ellipse 50% 40% at 0% 60%, hsl(252 56% 57% / 0.03), transparent);
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(240 5% 20%);
+  border-radius: 3px;
 }
 
-/* Result card fade-in animation */
+/* Selection */
+::selection {
+  background: hsl(252 65% 55% / 0.3);
+}
+
+/* ===== keyframes ===== */
+
 @keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
 .animate-fade-in-up {
-  animation: fade-in-up 0.4s ease-out both;
+  animation: fade-in-up 0.5s ease-out both;
 }
 
-.animate-fade-in-up:nth-child(1) { animation-delay: 0.05s; }
-.animate-fade-in-up:nth-child(2) { animation-delay: 0.1s; }
-.animate-fade-in-up:nth-child(3) { animation-delay: 0.15s; }
-.animate-fade-in-up:nth-child(4) { animation-delay: 0.2s; }
-.animate-fade-in-up:nth-child(5) { animation-delay: 0.25s; }
-.animate-fade-in-up:nth-child(6) { animation-delay: 0.3s; }
-.animate-fade-in-up:nth-child(7) { animation-delay: 0.35s; }
-.animate-fade-in-up:nth-child(8) { animation-delay: 0.4s; }
-.animate-fade-in-up:nth-child(9) { animation-delay: 0.45s; }
-
-/* Glow pulse for hero */
-@keyframes glow-pulse {
-  0%, 100% { opacity: 0.4; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(1.05); }
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out both;
 }
 
-/* Type label styling */
-.cognitive-badge-intj {
-  background: linear-gradient(135deg, hsl(252 56% 57%), hsl(252 56% 45%));
+@keyframes glow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
 }
-.cognitive-badge-enfp {
-  background: linear-gradient(135deg, hsl(190 80% 50%), hsl(190 80% 40%));
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes flow-pulse {
+  0%, 100% { transform: scaleX(1); opacity: 0.4; }
+  50% { transform: scaleX(1.02); opacity: 0.8; }
+}
+.animate-flow-pulse {
+  animation: flow-pulse 3s ease-in-out infinite;
+}
+
+@keyframes typing-dot {
+  0%, 80%, 100% { transform: scale(0); opacity: 0; }
+  40% { transform: scale(1); opacity: 1; }
+}
+.typing-dot {
+  animation: typing-dot 1.4s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(240 5% 10%) 25%,
+    hsl(240 5% 15%) 50%,
+    hsl(240 5% 10%) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+/* Sheen for the flow line and glow elements */
+.flow-line {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(252 65% 55% / 0.6),
+    hsl(190 80% 50% / 0.6),
+    transparent
+  );
 }
