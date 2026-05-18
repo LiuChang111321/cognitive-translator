@@ -35,29 +35,21 @@ export default function Home() {
   const loading = status === "loading";
 
   return (
-    <main className="flex-1 flex flex-col items-center px-4 sm:px-6 max-w-2xl mx-auto w-full">
+    <main className="flex-1 flex flex-col items-center px-4 sm:px-6 max-w-xl mx-auto w-full">
       <CognitiveHero />
 
-      <div className="w-full space-y-16 mt-4 mb-16">
+      <div className="w-full space-y-12 mt-2 mb-16">
+        <CognitiveTranslator
+          onSubmit={handleSubmit}
+          values={formValues}
+          onValuesChange={setFormValues}
+          loading={loading}
+          result={result}
+          error={error}
+          status={status}
+        />
+
         <CognitiveExamples onSelect={handleExampleSelect} />
-
-        <div className="space-y-4">
-          <div className="text-center">
-            <span className="text-[10px] text-white/20 uppercase tracking-[0.2em] font-medium">
-              Cognitive Translator
-            </span>
-          </div>
-          <CognitiveTranslator
-            onSubmit={handleSubmit}
-            values={formValues}
-            onValuesChange={setFormValues}
-            loading={loading}
-            result={result}
-            error={error}
-            status={status}
-          />
-        </div>
-
         <CognitiveAbout />
         <Disclaimer />
       </div>

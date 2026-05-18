@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { MBTI_DISPLAY, MBTI_OPTIONS } from "@/lib/constants";
 import type { MbtiCode } from "@/lib/mbti/types";
 import type { Scenario, TranslateInput, TranslateResult } from "@/lib/types";
@@ -15,12 +15,10 @@ function PillSelect({
   options,
   value,
   onChange,
-  className,
 }: {
   options: { value: string; label: string }[];
   value: string;
   onChange: (v: string) => void;
-  className?: string;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -33,20 +31,22 @@ function PillSelect({
     return () => document.removeEventListener("mousedown", handle);
   }, []);
 
+  const selected = options.find((o) => o.value === value);
+
   return (
-    <div ref={ref} className={`relative ${className || ""}`}>
+    <div ref={ref} className="relative">
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.07] border border-white/[0.06] transition-colors text-left min-w-[120px]"
+        className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white border border-gray-200 hover:border-gray-300 transition-colors text-left shadow-sm w-full"
       >
-        <span className="text-sm font-semibold text-white/90">
-          {options.find((o) => o.value === value)?.value}
+        <span className="text-sm font-semibold text-foreground truncate">
+          {selected?.label ?? value}
         </span>
-        <ChevronDown className="h-3 w-3 text-white/30 ml-auto" />
+        <ChevronDown className="h-3.5 w-3.5 text-muted-foreground/40 ml-auto shrink-0" />
       </button>
       {open && (
-        <div className="absolute z-50 top-full mt-1 left-0 w-64 max-h-64 overflow-y-auto rounded-lg border border-white/[0.08] bg-[#0d0d0f] backdrop-blur-xl shadow-2xl shadow-black/40">
+        <div className="absolute z-50 top-full mt-1.5 left-0 w-56 max-h-64 overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-lg shadow-black/5">
           {options.map((opt) => (
             <button
               key={opt.value}
@@ -55,11 +55,13 @@ function PillSelect({
                 onChange(opt.value);
                 setOpen(false);
               }}
-              className={`w-full text-left px-3 py-2 text-xs hover:bg-white/[0.06] transition-colors ${
-                opt.value === value ? "bg-white/[0.04] text-white" : "text-white/60"
+              className={`w-full text-left px-3 py-2.5 text-xs transition-colors ${
+                opt.value === value
+                  ? "bg-primary/10 text-primary font-medium"
+                  : "text-muted-foreground hover:bg-gray-50"
               }`}
             >
-              <span className="font-medium">{opt.label}</span>
+              <span>{opt.label}</span>
             </button>
           ))}
         </div>
@@ -69,15 +71,15 @@ function PillSelect({
 }
 
 // =============================================
-// Scenario labels
+// Scenario options
 // =============================================
 
 const SCENARIO_OPTIONS = [
-  { value: "恋爱关系", english: "Romantic" },
-  { value: "朋友沟通", english: "Friendship" },
-  { value: "团队协作", english: "Teamwork" },
-  { value: "工作反馈", english: "Work feedback" },
-  { value: "自定义", english: "Custom" },
+  { value: "恋爱关系", label: "💕 恋爱关系" },
+  { value: "朋友沟通", label: "🍻 朋友沟通" },
+  { value: "团队协作", label: "🤝 团队协作" },
+  { value: "工作反馈", label: "💼 工作反馈" },
+  { value: "自定义", label: "✏️ 自定义" },
 ];
 
 // =============================================
@@ -140,52 +142,59 @@ export function CognitiveTranslator({
 
   return (
     <section className="w-full">
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Direction — mind panels */}
-        <div className="flex items-stretch gap-3 sm:gap-5">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Direction — sender & receiver */}
+        <div className="flex flex-col sm:flex-row items-stretch gap-3">
           {/* Sender panel */}
-          <div className="flex-1 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 sm:p-5 transition-colors hover:bg-white/[0.04]">
-            <div className="flex items-center gap-3 mb-3">
+          <div className="flex-1">
+            <label className="block text-[11px] text-muted-foreground/60 mb-1.5 font-medium tracking-wide">
+              说这句话的人
+            </label>
+            <div className="rounded-xl bg-white border border-gray-200 p-4 shadow-sm">
               <PillSelect
-                options={MBTI_OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
+                options={MBTI_OPTIONS.map((o) => ({
+                  value: o.value,
+                  label: o.label,
+                }))}
                 value={values.senderType}
                 onChange={(v) =>
                   onValuesChange({ ...values, senderType: v as MbtiCode })
                 }
               />
-            </div>
-            <p className="text-[11px] text-white/30 leading-relaxed tracking-wide">
-              {senderInfo.shortLabel.split(" / ")[1] || senderInfo.shortLabel}
-              <span className="block text-white/20 mt-0.5">
+              <p className="text-[11px] text-muted-foreground/40 mt-2 leading-relaxed">
                 {senderInfo.traits}
-              </span>
-            </p>
+              </p>
+            </div>
           </div>
 
-          {/* Arrow */}
-          <div className="flex items-center justify-center shrink-0">
-            <div className="w-8 h-8 rounded-full border border-white/[0.06] bg-white/[0.02] flex items-center justify-center">
-              <ArrowRight className="h-3.5 w-3.5 text-white/30" />
+          {/* Arrow connector */}
+          <div className="flex items-center justify-center sm:pt-8 shrink-0">
+            <div className="w-7 h-7 rounded-full bg-primary/8 border border-primary/15 flex items-center justify-center">
+              <span className="text-sm text-primary/50 sm:block hidden">→</span>
+              <span className="text-sm text-primary/50 sm:hidden block">↓</span>
             </div>
           </div>
 
           {/* Receiver panel */}
-          <div className="flex-1 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 sm:p-5 transition-colors hover:bg-white/[0.04]">
-            <div className="flex items-center gap-3 mb-3">
+          <div className="flex-1">
+            <label className="block text-[11px] text-muted-foreground/60 mb-1.5 font-medium tracking-wide">
+              听这句话的人
+            </label>
+            <div className="rounded-xl bg-white border border-gray-200 p-4 shadow-sm">
               <PillSelect
-                options={MBTI_OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
+                options={MBTI_OPTIONS.map((o) => ({
+                  value: o.value,
+                  label: o.label,
+                }))}
                 value={values.receiverType}
                 onChange={(v) =>
                   onValuesChange({ ...values, receiverType: v as MbtiCode })
                 }
               />
-            </div>
-            <p className="text-[11px] text-white/30 leading-relaxed tracking-wide">
-              {receiverInfo.shortLabel.split(" / ")[1] || receiverInfo.shortLabel}
-              <span className="block text-white/20 mt-0.5">
+              <p className="text-[11px] text-muted-foreground/40 mt-2 leading-relaxed">
                 {receiverInfo.traits}
-              </span>
-            </p>
+              </p>
+            </div>
           </div>
         </div>
 
@@ -194,28 +203,30 @@ export function CognitiveTranslator({
           <select
             value={values.scenario}
             onChange={(e) => handleScenarioChange(e.target.value)}
-            className="bg-white/[0.04] border border-white/[0.06] rounded-lg px-3 py-2 text-xs text-white/70 appearance-none cursor-pointer hover:bg-white/[0.06] transition-colors focus:outline-none focus:ring-1 focus:ring-primary/30"
+            className="bg-white border border-gray-200 rounded-xl px-3.5 py-2 text-xs text-foreground/70 appearance-none cursor-pointer hover:border-gray-300 transition-colors focus:outline-none focus:ring-1 focus:ring-primary/30 shadow-sm"
           >
             {SCENARIO_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value} className="bg-[#0d0d0f]">
-                {opt.value}
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
               </option>
             ))}
           </select>
           {values.scenario === "自定义" && (
             <input
               type="text"
-              placeholder="Describe the scenario..."
+              placeholder="描述一下场景..."
               value={values.customScenario}
               onChange={(e) =>
                 onValuesChange({ ...values, customScenario: e.target.value })
               }
-              className="flex-1 min-w-[160px] bg-white/[0.04] border border-white/[0.06] rounded-lg px-3 py-2 text-xs text-white/70 placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-primary/30"
+              className="flex-1 min-w-[160px] bg-white border border-gray-200 rounded-xl px-3.5 py-2 text-xs text-foreground/70 placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-primary/30 shadow-sm"
             />
           )}
-          <span className="text-[10px] text-white/15 ml-auto">
-            {values.originalText.length}/2000
-          </span>
+          {values.scenario !== "自定义" && (
+            <span className="text-[10px] text-muted-foreground/25 ml-auto">
+              {values.originalText.length}/2000
+            </span>
+          )}
         </div>
 
         {/* Text input */}
@@ -226,10 +237,10 @@ export function CognitiveTranslator({
             onChange={(e) =>
               onValuesChange({ ...values, originalText: e.target.value })
             }
-            placeholder="Type what someone said..."
-            rows={4}
+            placeholder="把ta说过的话粘贴到这里..."
+            rows={3}
             maxLength={2000}
-            className="w-full bg-white/[0.02] border border-white/[0.06] rounded-xl px-5 py-4 text-sm text-white/80 placeholder:text-white/15 resize-none focus:outline-none focus:border-white/[0.12] transition-colors leading-relaxed"
+            className="w-full bg-white border border-gray-200 rounded-xl px-5 py-4 text-sm text-foreground/80 placeholder:text-muted-foreground/30 resize-none focus:outline-none focus:border-primary/30 focus:ring-1 focus:ring-primary/20 transition-colors leading-relaxed shadow-sm"
           />
         </div>
 
@@ -238,22 +249,19 @@ export function CognitiveTranslator({
           <button
             type="submit"
             disabled={loading || !values.originalText.trim()}
-            className="group relative inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium text-white bg-white/[0.06] border border-white/[0.08] hover:bg-white/[0.1] disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
+            className="group relative inline-flex items-center gap-2 px-8 py-2.5 rounded-xl text-sm font-medium text-white bg-primary hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300 shadow-sm shadow-primary/20 active:scale-[0.98]"
           >
             {loading ? (
               <span className="flex items-center gap-2">
                 <span className="flex gap-1">
-                  <span className="typing-dot w-1.5 h-1.5 rounded-full bg-white/60 inline-block" />
-                  <span className="typing-dot w-1.5 h-1.5 rounded-full bg-white/60 inline-block" />
-                  <span className="typing-dot w-1.5 h-1.5 rounded-full bg-white/60 inline-block" />
+                  <span className="typing-dot w-1.5 h-1.5 rounded-full bg-white/80 inline-block" />
+                  <span className="typing-dot w-1.5 h-1.5 rounded-full bg-white/80 inline-block" />
+                  <span className="typing-dot w-1.5 h-1.5 rounded-full bg-white/80 inline-block" />
                 </span>
-                <span className="text-white/40">Translating</span>
+                <span className="text-white/70">翻译中</span>
               </span>
             ) : (
-              <>
-                <span>Translate intent</span>
-                <ArrowRight className="h-3.5 w-3.5 text-white/40 group-hover:translate-x-0.5 transition-transform" />
-              </>
+              <span>🪄 翻译一下</span>
             )}
           </button>
         </div>
@@ -261,8 +269,8 @@ export function CognitiveTranslator({
 
       {/* Error */}
       {error && status === "error" && (
-        <div className="mt-8 p-4 rounded-xl border border-red-500/20 bg-red-500/5">
-          <p className="text-xs text-red-400/80">{error}</p>
+        <div className="mt-6 p-4 rounded-xl border border-destructive/30 bg-destructive/5">
+          <p className="text-xs text-destructive/80">{error}</p>
         </div>
       )}
 
@@ -270,7 +278,7 @@ export function CognitiveTranslator({
       {result && status === "success" && (
         <div
           ref={outputRef}
-          className="mt-12"
+          className="mt-10"
           key={result.senderDeepIntent.slice(0, 60)}
         >
           <CognitiveOutput

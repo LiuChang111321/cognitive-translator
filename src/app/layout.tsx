@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "认知翻译器 | Cognitive Translator",
+  title: "MBTI 沟通翻译器 | 同一句话，不同人格听到的是不同意思",
   description:
-    "把 INTJ 和 ENFP 之间的信息编码差异翻译成双方都能理解的语言。",
+    "基于MBTI认知风格的沟通翻译工具。把一句话翻译成对方人格能听懂的语言。不诊断，不判断，仅供娱乐参考。",
 };
 
 export default function RootLayout({
